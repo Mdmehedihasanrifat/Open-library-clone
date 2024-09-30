@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "target": "es2020",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "./dist",
+      "lib": ["es6"]
+    },
+    "include": ["./*.ts", 
+      "src/**/*",
+      "@types/**/*" // Add this line if your types are in a separate folder
+    ],
+    "exclude": ["node_modules"]
+  }

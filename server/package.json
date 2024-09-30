@@ -1,0 +1,33 @@
+{
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.20.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.0",
+        "jsonwebtoken": "^9.0.2",
+        "multer": "^1.4.5-lts.1",
+        "nodemailer": "^6.9.15",
+        "pg": "^8.13.0",
+        "ts-node-dev": "^2.0.0"
+    },
+    "scripts": {
+        "build": "tsc --outDir build",
+        "start": "nodemon --watch src --exec ts-node index.ts",
+        "dev": "ts-node-dev --respawn index.ts"
+    },
+    "devDependencies": {
+        "@types/bcrypt": "^5.0.2",
+        "@types/bcryptjs": "^2.4.6",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "@types/jsonwebtoken": "^9.0.7",
+        "@types/node": "^22.5.5",
+        "@types/nodemailer": "^6.4.15",
+        "@types/pg": "^8.11.10",
+        "nodemon": "^3.1.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.5.4"
+    }
+}
