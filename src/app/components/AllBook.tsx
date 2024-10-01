@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
+import cacheData from "../utils/cache"
 type BookCarouselProps = {
   category: string;
 };
@@ -19,6 +19,7 @@ const BooksCarousel: React.FC<BookCarouselProps> = ({ category }) => {
         const response = await fetch(`http://localhost:8000/api/books?category=${category}`);
         const data = await response.json();
         setBooks(data);
+        cacheData(`books_${category}`, fetchBooks).then(setBooks).catch(console.error);
       } catch (error) {
         console.error('Error fetching books:', error);
       }

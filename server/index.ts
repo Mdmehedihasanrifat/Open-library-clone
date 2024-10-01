@@ -7,6 +7,7 @@ import cors from 'cors'
 import path from 'path'
 
 
+
 dotenv.config();
 
 const app = express();
@@ -17,10 +18,10 @@ app.use("/images", express.static(path.resolve(__dirname, "../public/uploads")))
 app.use(cors({origin: 'http://localhost:3000', credentials: true}))
 app.use('/api/auth', authRoutes);
 app.use('/api', bookRoutes);
- 
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+

@@ -6,31 +6,40 @@ const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const cache: { [key: string]: any[] } = {}; // Cache object
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchTerm(value);
 
     if (value.length > 0) {
-      try {
-        const response = await fetch(`http://localhost:8000/api/books?search=${value}`);
-        
-        // Ensure the response is okay
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        
-        const data = await response.json();
-
-        // Debugging: Log the data to see the structure
-        console.log('Search Results:', data);
-        
-        // Update the search results based on the response structure
-        setSearchResults(data || []); // Assuming data is an array
+      // Check if results are in cache
+      if (cache[value]) {
+        console.log('Using cached results:', cache[value]);
+        setSearchResults(cache[value]);
         setIsDropdownOpen(true);
-      } catch (error) {
-        console.error('Error fetching search results:', error);
-        setIsDropdownOpen(false); // Close dropdown on error
+      } else {
+        try {
+          const response = await fetch(`http://localhost:8000/api/books?search=${value}`);
+          
+          // Ensure the response is okay
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          
+          const data = await response.json();
+
+          // Debugging: Log the data to see the structure
+          console.log('Search Results:', data);
+          
+          // Update the search results based on the response structure
+          setSearchResults(data || []); // Assuming data is an array
+          cache[value] = data; // Store results in cache
+          setIsDropdownOpen(true);
+        } catch (error) {
+          console.error('Error fetching search results:', error);
+          setIsDropdownOpen(false); // Close dropdown on error
+        }
       }
     } else {
       setIsDropdownOpen(false);
