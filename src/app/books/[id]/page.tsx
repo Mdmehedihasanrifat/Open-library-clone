@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import LikeDislike from '@/app/components/Like';
 import Cookies from 'js-cookie';
@@ -29,9 +29,10 @@ type Book = {
 
 const BookDetailsPage: React.FC = () => {
   const token = Cookies.get('token');
-  const user = useUser();
+  const { user, setDeletedId } = useUser(); // Corrected way to access the user and setDeletedId
   const { id } = useParams(); // Get the book id from the route params
   const [book, setBook] = useState<Book | null>(null);
+  const router = useRouter(); // Added router for navigation
 
   const handleDelete = async (book_id: number) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this book?');
@@ -46,7 +47,8 @@ const BookDetailsPage: React.FC = () => {
 
         if (response.ok) {
           alert('Book deleted successfully');
-          // Optionally, refresh the list of books or handle the UI accordingly
+          setDeletedId(book_id); // Store the deleted book ID in the context
+          router.push('/books'); // Redirect to books list
         } else {
           const errorData = await response.json();
           alert(`Failed to delete book: ${errorData.message}`);
@@ -62,10 +64,10 @@ const BookDetailsPage: React.FC = () => {
       const response = await fetch(`http://localhost:8000/api/books/${id}`);
       return response.json();
     };
-  
+
     // Provide an expiration time (e.g., 5 minutes = 300000 milliseconds)
     const cachedBook = cacheData(`book_${id}`, fetchBookDetails, 300000);
-  
+
     cachedBook
       .then((data) => {
         if (data && data.length > 0) {
@@ -76,7 +78,7 @@ const BookDetailsPage: React.FC = () => {
         }
       })
       .catch(console.error);
-  }, [id]);;
+  }, [id]);
 
   if (!book) {
     return <div className="text-center">Loading...</div>;
@@ -110,14 +112,14 @@ const BookDetailsPage: React.FC = () => {
 
           <LikeDislike bookId={book.book_id} initialLikes={book.like_count ? book.like_count : 0} />
 
-          {parseInt(user?.user?.id) === parseInt(book?.user_id) &&
+          {parseInt(user?.id) === parseInt(book?.user_id) && (
             <div>
               <Link href={`/edit-books/${book.book_id}`}>
                 <button className='bg-yellow-300 rounded m-2 p-2'>Edit</button>
               </Link>
               <button className='bg-red-600 rounded m-2 p-2' onClick={() => handleDelete(book.book_id)}>Delete</button>
             </div>
-          }
+          )}
         </div>
       </div>
     </div>

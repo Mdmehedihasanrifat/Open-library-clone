@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import cacheData from "../utils/cache"
+import { useUser } from './UserContext';
 type BookCarouselProps = {
   category: string;
 };
@@ -9,6 +10,7 @@ type BookCarouselProps = {
 const BooksCarousel: React.FC<BookCarouselProps> = ({ category }) => {
   const [books, setBooks] = useState<any[]>([]);
   const [currentBatch, setCurrentBatch] = useState(0); // Track current batch of books
+  const {deletedId}=useUser();
 
   const itemsPerBatch = 5; // Number of books per batch
 
@@ -19,6 +21,9 @@ const BooksCarousel: React.FC<BookCarouselProps> = ({ category }) => {
         const response = await fetch(`http://localhost:8000/api/books?category=${category}`);
         const data = await response.json();
         setBooks(data);
+        setBooks((prevBooks) => prevBooks.filter((single) => single.book_id !== deletedId));
+
+
         cacheData(`books_${category}`, fetchBooks).then(setBooks).catch(console.error);
       } catch (error) {
         console.error('Error fetching books:', error);
